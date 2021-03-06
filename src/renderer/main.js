@@ -9,6 +9,10 @@ import Antd from "ant-design-vue";
 import "ant-design-vue/dist/antd.css"; // or 'ant-design-vue/dist/antd.less'
 Vue.use(Antd);
 
+import * as echarts from "echarts";
+import "echarts-gl";
+Vue.prototype.$echarts = echarts;
+
 if (!process.env.IS_WEB) Vue.use(require("vue-electron"));
 Vue.http = Vue.prototype.$http = axios;
 Vue.config.productionTip = false;

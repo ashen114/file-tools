@@ -4,7 +4,7 @@
       @breadcrumbList="getBreadcrumbList"
     ></siderMenuComponent>
     <a-layout>
-      <a-layout-header style="background: red; padding: 0">
+      <a-layout-header style="background: #fff; padding: 0">
         <headComponent></headComponent>
       </a-layout-header>
       <a-layout-content style="margin: 0 16px">
