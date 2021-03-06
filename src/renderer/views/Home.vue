@@ -6,6 +6,7 @@
 
 <script>
 export default {
+  name: "home",
   data() {
     return {
       content: "首页",

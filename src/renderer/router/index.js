@@ -13,12 +13,12 @@ export default new Router({
   routes: [
     {
       path: "/",
-      redirect: "/main",
+      redirect: "/home",
     },
     {
-      path: "/main",
-      name: "main",
-      component: require("@/views/Main").default,
+      path: "/home",
+      name: "home",
+      component: require("@/views/Home").default,
     },
     {
       path: "/file",
