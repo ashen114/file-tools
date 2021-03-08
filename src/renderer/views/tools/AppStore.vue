@@ -70,9 +70,8 @@
   </a-table>
 </template>
 <script>
-const { exec } = require("child_process");
 const fs = require("fs");
-
+import { openFile } from "@/utils/files.js";
 import { fileList } from "@/utils/mock.js";
 
 export default {
@@ -145,7 +144,8 @@ export default {
   },
   filters: {
     formatTime(time) {
-      if (!(time && typeof tiem == "string")) {
+      console.log("time:", time);
+      if (!(time && time instanceof Date)) {
         return "--";
       }
       time = new Date(time);
@@ -154,13 +154,25 @@ export default {
         "/" +
         (time.getMonth() + 1).toString().padStart(2, 0) +
         "/" +
-        time.getDate().toString().padStart(2, 0) +
+        time
+          .getDate()
+          .toString()
+          .padStart(2, 0) +
         " " +
-        time.getHours().toString().padStart(2, 0) +
+        time
+          .getHours()
+          .toString()
+          .padStart(2, 0) +
         ":" +
-        time.getMinutes().toString().padStart(2, 0) +
+        time
+          .getMinutes()
+          .toString()
+          .padStart(2, 0) +
         ":" +
-        time.getSeconds().toString().padStart(2, 0)
+        time
+          .getSeconds()
+          .toString()
+          .padStart(2, 0)
       );
     },
   },
@@ -229,21 +241,7 @@ export default {
         this.fileList = newData;
       }
     },
-    openFile(filePath) {
-      if (filePath && typeof filePath === "string") {
-        // execFile只支持打开真实的文件，exec支持打开快捷链接方式的应用
-        exec(filePath, (error, stdout, stderr) => {
-          if (error) {
-            this.$message.error("文件异常");
-            throw error;
-          }
-          console.log("stdout:", stdout);
-          console.log("stderr:", stderr);
-        });
-      } else {
-        this.$message.error("文件不存在");
-      }
-    },
+    openFile,
   },
 };
 </script>
