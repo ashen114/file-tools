@@ -70,7 +70,7 @@
   </a-table>
 </template>
 <script>
-const { execFile } = require("child_process");
+const { exec } = require("child_process");
 const fs = require("fs");
 
 import { fileList } from "@/utils/mock.js";
@@ -145,45 +145,41 @@ export default {
   },
   filters: {
     formatTime(time) {
+      if (!(time && typeof tiem == "string")) {
+        return "--";
+      }
       time = new Date(time);
       return (
         time.getFullYear() +
         "/" +
         (time.getMonth() + 1).toString().padStart(2, 0) +
         "/" +
-        time
-          .getDate()
-          .toString()
-          .padStart(2, 0) +
+        time.getDate().toString().padStart(2, 0) +
         " " +
-        time
-          .getHours()
-          .toString()
-          .padStart(2, 0) +
+        time.getHours().toString().padStart(2, 0) +
         ":" +
-        time
-          .getMinutes()
-          .toString()
-          .padStart(2, 0) +
+        time.getMinutes().toString().padStart(2, 0) +
         ":" +
-        time
-          .getSeconds()
-          .toString()
-          .padStart(2, 0)
+        time.getSeconds().toString().padStart(2, 0)
       );
     },
   },
   created() {
     if (this.fileList && this.fileList.length) {
       this.fileList = this.fileList.map((item) => {
-        let results = fs.statSync(item.filePath);
-        let { atime, birthtime, size } = results;
-        item = {
-          ...item,
-          size: (+size / 1024 / 1024).toFixed(2) + "MB",
-          createTime: birthtime, // 创建时间
-          lastVisitTime: atime, // 最后一次访问时间
-        };
+        if (fs.existsSync(item.filePath)) {
+          let results = fs.statSync(item.filePath);
+          console.log("results:", results);
+          let { atime, birthtime, size } = results;
+          item = {
+            ...item,
+            size: (+size / 1024 / 1024).toFixed(2) + "MB",
+            createTime: birthtime, // 创建时间
+            lastVisitTime: atime, // 最后一次访问时间
+          };
+        } else {
+          console.error("文件不存在:", item.filePath);
+        }
         return item;
       });
       this.cacheData = this.fileList.map((item) => ({ ...item }));
@@ -235,7 +231,8 @@ export default {
     },
     openFile(filePath) {
       if (filePath && typeof filePath === "string") {
-        execFile(filePath, (error, stdout, stderr) => {
+        // execFile只支持打开真实的文件，exec支持打开快捷链接方式的应用
+        exec(filePath, (error, stdout, stderr) => {
           if (error) {
             this.$message.error("文件异常");
             throw error;
